@@ -14,23 +14,39 @@ const BIB_LAST_FIRST = new RegExp(/[A-Z]{1}\w*,\s[A-Z]{1}\w*./);
 const NEWLINE = new RegExp(/\w*.\n/);
 
 
-function checkAgainst(arr, rex) {
+function checkAgainst(arr, rex, bib) {
+
+    var results = [];
+
     for (i = 0; i < arr.length; i++) {
         if (rex.test(arr[i]) == true) {
-            console.log(arr[i]);
+            if (bib.includes(arr[i])) {
+
+                var match = {
+                    "Author": arr[i],
+                    "Index": i
+                }
+               
+                results.push(match);
+            } else {
+                continue;
+            }
         }
     }
+
+    return results;
 }
 
 
-function processText(text, arr, rex) {
+function processText(text, rex, bib) {
 
     var raw = text.replace(/\n/g, ' ');
     var nopunct = raw.replace(/\./g, '');
     var processed = nopunct.split(/[\(]|[\)]|[\s]/);
 
-    var result = checkAgainst(arr, rex);
-    return result;
+    var results = checkAgainst(processed, rex, bib);
+    console.log(results);
+    return results;
 }
 
-processText(text, BIB, AUTHOR);
+processText(text, AUTHOR, BIB);
