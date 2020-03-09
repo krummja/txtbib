@@ -1,55 +1,47 @@
-var fs = require("fs");
-var text = fs.readFileSync("./test.txt").toString("utf-8");
-var textByLine = text.split("\n");
+var fs = require('fs');
+var text = fs.readFileSync('./test.txt').toString('utf-8');
 
 const BIB = ['Crum', 'Smith'];
 
-const YEAR = new RegExp(/\d{4}/);
-const PAREN_YEAR = new RegExp(/\(\d{4}\)/);
-const AUTHOR = new RegExp(/[A-Z]\w*/);
-const PAREN_AUTHOR_YEAR = new RegExp(/\([A-Z]\w*\s\d{4}\)/);
-const PRETEXT_PAREN_AUTHOR_YEAR = new RegExp(/\(\w*\s[A-Z]\w*\s\d{4}\)/);
-const ABBREV_PAREN_AUTHOR_YEAR = new RegExp(/\(\w*.\s[A-Z]\w*\s\d{4}\)/);
-const BIB_LAST_FIRST = new RegExp(/[A-Z]{1}\w*,\s[A-Z]{1}\w*./);
-const NEWLINE = new RegExp(/\w*.\n/);
-
-function checkAgainst(arr, rex, bib) {
-
-    var results = [];
-
-    for (i = 0; i < arr.length; i++) {
-        // Checks against regex supplied in function call
-        if (rex.test(arr[i]) == true) {
-            // Checks if positive match is found in BIB dictionary
-            if (bib.includes(arr[i])) {
-                // Checks is BIB item is followed by YEAR in the original text
-                if (YEAR.test(arr[i+1]) == true) {
-                    var match = {
-                        "Author": arr[i],
-                        "Year": arr[i+1],
-                        "Index": i
-                    }
-                }
-                results.push(match);
-            } else {
-                continue;
-            }
-        }
+class BibMatch {
+    constructor(matchData) {
+        this.matchData = matchData;
     }
 
-    return results;
+    getMatchInfo() {
+        var matchIndex = this.matchData.index;
+        var matchOutdex = matchIndex + this.matchData[0].length;
+        var author = this.matchData[1];
+        var year = this.matchData[2];
+        return [matchIndex, matchOutdex, author, year];
+    }
+
+    buildCiteKey() {
+        var index = this.getMatchInfo()[0];
+        var normalizedAuthor = this.getMatchInfo()[2].toLowerCase();
+        var normalizedYear = this.getMatchInfo()[3].replace(/[\(]/, '').replace(/[\)]/, '');
+        var citeKey = "\\citet{" + normalizedAuthor + normalizedYear + "}" + " at index " + index;
+        // Outputs '\citet{author0000} at index i'
+
+        return citeKey
+    }
 }
 
+function processText(text) {
+    let paren_author_year = /\(([A-Z]\w*)\s(\d{4})\)/g
+    let author_paren_year = /([A-Z]\w*)\s(\(\d{4}\))/g
+    let str = text
 
-function processText(text, rex, bib) {
+    var match_list = []
 
-    var raw = text.replace(/\n/g, ' ');
-    var nopunct = raw.replace(/\./g, '');
-    var processed = nopunct.split(/[\(]|[\)]|[\s]/);
+    while ((match = author_paren_year.exec(str)) != null) {
+        var bibOutput = new BibMatch(match)
 
-    var results = checkAgainst(processed, rex, bib);
-    console.log(results);
-    return results;
+        match_list.push(bibOutput.getMatchInfo())
+        console.log(bibOutput.buildCiteKey())
+    }
+
+    return match_list;
 }
 
-processText(text, AUTHOR, BIB);
+processText(text);
