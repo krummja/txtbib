@@ -38,39 +38,37 @@ function processText(text) {
     const paren_author_year = /\(([A-Z]\w*)\s(\d{4})\)/g;
     const author_paren_year = /([A-Z]\w*)\s(\(\d{4}\))/g;
     var str = text;
+    var results = [];
 
-    var match_list = [];
-
-    // Author (2020)
     while ((match = paren_author_year.exec(str)) != null) {
-        var bibOutput = new BibMatch(match, citeClass="p");
-
-        var citeKey = bibOutput.buildCiteKey();
-        var output = replaceString(match[0], citeKey, text);
+        citeClass = "p";
+        results.push(match[0]);
     }
 
-    // (Author 2020)
     while ((match = author_paren_year.exec(str)) != null) {
-        var bibOutput = new BibMatch(match, citeClass="t");
-
-        var citeKey = bibOutput.buildCiteKey();
-        var output = replaceString(match[0], citeKey, text);
+        citeClass = "t";
+        results.push(match[0]);
     }
 
-    return match_list;
+    console.log(results);
 }
 
+// Take the match results Array, process each item to output a citeKey array with members ['match text', citeKey].
+// For each item in the citeKey array, do a conditional during replace.
+// for i in citeKey, for j in results, if citeKey[i][0] == results[j], replaceString(results[j], citeKey[i][0], str)
+// That might work...
 
 function writeToFile(citeDictionary, text) {
     var str = text;
-    var dictionary = citeDictionary;
 
     // fs.writeFile('output.tex', str, (err) => {
     //     if (err) throw err;
     //     console.log('The file has been saved.');
     // })
 
+    // This works to replace instances of 'Crum' with 'Ramchand' in the input text.
     var processed = replaceString('Crum', 'Ramchand', str);
+    console.log(processed);
 }
 
 var match_list = processText(text);
