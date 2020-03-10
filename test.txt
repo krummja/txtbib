@@ -2,6 +2,4 @@ Ramchand (1949) This is some test text to help build the document parsing functi
 
 This is a test of the citation RegExp, as developed in Crum (2020).
 
-This is another source by Crum (1995).
-
-It's kind of hard (cf. Smith 1998).
+It's kind of hard (Smith 1998).
