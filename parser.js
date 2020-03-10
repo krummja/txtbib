@@ -6,7 +6,7 @@ function buildCiteKey(match, citeClass) {
     var citeKey = "";
     var normalizedAuthor = match[1].toLowerCase();
     var normalizedYear = match[2].replace(/[\(]/, '').replace(/[\)]/, '');
-    var citeKey = "\\cite"+ citeClass + "{" + normalizedAuthor + normalizedYear + "}";
+    var citeKey = "\\cite" + citeClass + "{" + normalizedAuthor + normalizedYear + "}";
     return citeKey;
 }
 
@@ -25,7 +25,6 @@ function processText(text) {
         citeClass = "p";
         var citeKey = buildCiteKey(match, citeClass);
         str = replaceString(match[0], citeKey, str);
-
     }
 
     while ((match = author_paren_year.exec(str)) != null) {
