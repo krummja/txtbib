@@ -1,4 +1,4 @@
-# BibTeX Parser
+# TxtBib - BibTeX Parser
 
 This is a BibTeX parser built in JavaScript to assist in converting plain-text citations into corresponding citekeys.
 

@@ -1,8 +1,8 @@
 {
-  "name": "bibtex_parser",
+  "name": "TxtBib",
   "version": "1.0.0",
   "description": "",
-  "main": "parser.js",
+  "main": "txtbib.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
